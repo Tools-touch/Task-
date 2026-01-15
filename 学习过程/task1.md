@@ -1,4 +1,4 @@
-# Task1 学习记录，本地部署和测试
+# Task1 学习记录，TS版本
 
 ### 创建task1 工程
 - 命令行创建
@@ -47,7 +47,7 @@ SECRET=你的私钥
 
 - 使用`web3.js` 铸造一个 SPL Token代码
 - 在`blueshift`上提交代码时，去掉 `import "dotenv/config";`
-- 创建 `minit.ts` 文件，编写代码
+- 创建 `mint.ts` 文件，编写代码
 ```typescript
 import {
   Keypair,
@@ -199,9 +199,52 @@ Transaction Signature: 5ucFAj3UAnYtA8LEAwqq9jR1RmsDWayyKSQLpY5PhZz7fqHSR11ya3KxM
 
 
 ## 常见问题：
-###  一、 .env 文件
+## 一、如何创建钱包
+
+在终端运行：
+
+```
+solana-keygen new
+```
+
+你会看到类似提示：
+
+```
+Generating a new keypair
+For added security, enter a BIP39 passphrase
+BIP39 Passphrase (empty for none):
+```
+
+直接回车即可（不设密码也可以）。
+
+然后会显示：
+
+```
+Wrote new keypair to /Users/你/.config/solana/id.json
+================================================================
+pubkey: 9fZr...
+================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+apple tiger river ...
+```
+
+**重点：**
+
+- `pubkey` 就是你的钱包地址
+- 那 12 个英文单词是你的助记词，一定要保存好
+
+**配置RPC并获取SOL**
+
+```bash
+solana config set --url https://api.devnet.solana.com
+solana airdrop 2
+solana balance
+```
+
+###  二、 .env 文件
+
 #### 1. `SECRET` 如何获取？
-- 在终端中运行获取
+- 在终端中运行获取，前提需要创建好钱包
 
 ```bash
 node --input-type=module -e "import fs from 'fs'; import os from 'os'; import bs58 from 'bs58'; const p=os.homedir()+'/.config/solana/id.json'; const arr=Uint8Array.from(JSON.parse(fs.readFileSync(p,'utf8'))); console.log(arr.length); console.log(bs58.encode(arr));"
@@ -225,12 +268,13 @@ solana balance
 
 (3) 第三方节点
 - 官网：`https://www.helius.dev/`
+
 - 使用 `谷歌`、`Github`、`钱包` 登录
-- 复制 `RPC` 节点
-![alt text](image-1.png)
-- 需要在运行配置，改配置，获取`solana`
-```bash
-solana config set --url 复制的节点链接
-solana airdrop 1
-solana balance
-```
+
+- 缺点：本地配置时，`airdrop` 不了，需要使用官方`RPC`的才能`airdrop`
+
+- 链接：复制 `RPC` 节点，复制时需要把网络切换为 `Devnet` 模式
+  ![alt text](image-1.png)
+
+  
+
